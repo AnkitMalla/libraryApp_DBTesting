@@ -46,8 +46,8 @@ public class DashboardStepDefs
 
 
             //Step 1 - Make connection
-
-            DB_Util.createConnection();
+//
+//            DB_Util.createConnection();
 
             //USERS
 
@@ -84,6 +84,6 @@ public class DashboardStepDefs
 
 
             //close connection
-            DB_Util.destroy();
+//            DB_Util.destroy();
     }
 }

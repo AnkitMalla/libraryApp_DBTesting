@@ -3,8 +3,10 @@ package com.cydeo.steps;
 import com.cydeo.pages.DashBoardPage;
 import com.cydeo.pages.LoginPage;
 import com.cydeo.utility.BrowserUtil;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.When;
+import com.cydeo.utility.DB_Util;
+import io.cucumber.java.en.*;
+import org.junit.Assert;
+
 
 public class DashboardStepDefs
 {
@@ -29,6 +31,59 @@ public class DashboardStepDefs
         System.out.println("actualBookNumbers = " + actualBookNumbers);
         actualBorrowedBookNumbers = dashBoardPage.borrowedBooksNumber.getText();
         System.out.println("actualBorrowedBookNumbers = " + actualBorrowedBookNumbers);
+    }
 
+
+        @Then("the informations should be same with database")
+        public void the_informations_should_be_same_with_database() {
+
+        /*
+        which one is actual / expected
+
+        Expected = database
+        Actual = UI
+         */
+
+
+            //Step 1 - Make connection
+
+            DB_Util.createConnection();
+
+            //USERS
+
+            //run query
+            DB_Util.runQuery("select count(*) from users");
+
+            //store data
+            String expectedUsers = DB_Util.getFirstRowFirstColumn();
+
+            //compare
+            Assert.assertEquals(expectedUsers,actualUserNumbers);
+
+
+
+            //BOOKS
+
+            //Run Qury
+            DB_Util.runQuery("select  count(*) from books");
+            //store data
+            String expectedBooks = DB_Util.getFirstRowFirstColumn();
+            //Compare
+            Assert.assertEquals(expectedBooks,actualBookNumbers);
+
+
+            //BORROWED BOOKS
+            //Run Qury
+            DB_Util.runQuery("select count(*) from book_borrow\n" +
+                    "where is_returned=0");
+            //store data
+            String expectedBorrowedBooks = DB_Util.getFirstRowFirstColumn();
+            //Compare
+            Assert.assertEquals(expectedBorrowedBooks,actualBorrowedBookNumbers);
+
+
+
+            //close connection
+            DB_Util.destroy();
     }
 }
